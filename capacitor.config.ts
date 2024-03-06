@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'emc',
-  appName: 'emc',
+  appId: 'cdr-reporting-app',
+  appName: 'cdr-reporting-app',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

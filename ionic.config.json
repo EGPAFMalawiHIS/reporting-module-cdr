@@ -1,5 +1,5 @@
 {
-  "name": "emc",
+  "name": "cdr-reporting-app",
   "integrations": {
     "capacitor": {}
   },
