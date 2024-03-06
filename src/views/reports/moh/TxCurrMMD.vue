@@ -7,7 +7,6 @@
     :columns="columns"
     :rows="rows"
     :period="period"
-    :drill-title="(data) => `${data.row.ageGroup} ${data.column.label} ${data.row.gender}s`"
     useDateRangeFilter
     showIndices
     @generate="fetchData"

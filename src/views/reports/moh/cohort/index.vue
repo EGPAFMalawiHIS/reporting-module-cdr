@@ -39,7 +39,7 @@
           <ion-col size="12" :key="componentKey" id="report-content">
             <cohort-v :indicators="indicators" style="font-weight: 600" />
             <cohort-h :reportparams="period" />
-            <cohort-ft @onClickIndicator="onDrilldown" :indicators="indicators" />
+            <cohort-ft :indicators="indicators" />
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -50,19 +50,16 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { loader } from "@/utils/loader";
-import { modal } from "@/utils/modal";
 import CohortH from "./CohortHeader.vue";
 import CohortV from "./CohortValidator.vue"
 import CohortFt from "./CohortFooter.vue"
 import { IonCol, IonRow, IonGrid, IonButton, IonCard, IonCardHeader, IonCardContent, IonCardTitle } from "@ionic/vue";
-import { TableColumnInterface } from "@uniquedj95/vtable";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useRouter } from "vue-router";
-import { isEmpty, parseARVNumber, toDisplayGenderFmt } from "@/utils/common";
+import { isEmpty } from "@/utils/common";
 import { toastWarning } from "@/utils/toasts";
-import { toDisplayRangeFmt, getReportQuarters, toDisplayFmt } from "@/utils/his_date";
+import { toDisplayRangeFmt, getReportQuarters } from "@/utils/his_date";
 import { CohortReportService } from "@/services/cohort_report_service";
-import PatientDrillTable from '@/components/PatientDrillTable.vue';
 import { parameterizeUrl } from "@/utils/url";
 import { exportToCSV } from "@/utils/exports";
 import useFacility from "@/composables/useFacility";
@@ -106,27 +103,6 @@ function goDisagreggatedReport() {
   } else {
     toastWarning('Please select a period');
   }
-}
-    
-function onDrilldown(indicator: string) {
-  const customColumns: TableColumnInterface[] = [
-    { path: "arv_number", label: "ARV Number", preSort: parseARVNumber, initialSort: true },
-    { path: "given_name", label: "First Name", exportable: false },
-    { path: "family_name", label: "Last Name", exportable: false },
-    { path: "birthdate", label: "Date of Birth", formatter: toDisplayFmt },
-    { path: "gender", label: "Gender", formatter: toDisplayGenderFmt },
-    { path: "outcome", label: "Outcome" }
-  ];
-  const indicatorData = cohort.value.find((i: any) => i.name === indicator)
-  return modal.show(PatientDrillTable, {
-    data: {},
-    title: indicatorData['indicator_name'] || "Drill down",
-    customColumns,
-    rowParser: () => report.getCohortDrillDown(indicatorData.id),
-    reportType: "MoH",
-    period: period.value,
-    quarter: quarter.value 
-  });
 }
 
 const setReportPeriod = (quarter: string, startDate: string, endDate: string) => {

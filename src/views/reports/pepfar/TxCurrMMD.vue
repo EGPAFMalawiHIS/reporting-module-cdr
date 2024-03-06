@@ -1,15 +1,12 @@
 <template>
   <report-table
     title="PEPFAR TX CURR MMD Report"
-    subtitle="Clients that are alive and on treatment in the reporting period and
-      the difference in days between their clinical dispensation visit and 
-      next appointment / drug-runout date is: 3 months (1 - 89 days), 
-      3 - 5 months (90 - 179 days), 6+ months (180 or more days)"
+    subtitle="Clients that are alive and on treatment in the reporting period and the difference in days between their clinical dispensation visit and 
+      next appointment / drug-runout date is: 3 months (1 - 89 days), 3 - 5 months (90 - 179 days), 6+ months (180 or more days)"
     report-type="PEPFAR"
     :columns="columns"
     :rows="rows"
     :period="period"
-    :drill-title="(data) => `${data.row.ageGroup} ${data.column.label} | ${data.row.gender}s`"
     useDateRangeFilter
     showIndices
     @generate="fetchData"

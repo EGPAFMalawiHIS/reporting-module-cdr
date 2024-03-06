@@ -7,7 +7,6 @@
     :period="period"
     show-indices
     use-date-range-filter
-    :drill-title="drilldownTitleBuilder"
     @generate="fetchData"
   />
 </template>
@@ -15,7 +14,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { loader } from "@/utils/loader";
-import ReportTable, { DrilldownData } from "@/components/ReportTable.vue";
+import ReportTable from "@/components/ReportTable.vue";
 import { TableColumnInterface } from "@uniquedj95/vtable";
 import { toastWarning } from "@/utils/toasts";
 import { toDisplayGenderFmt } from "@/utils/common";
@@ -51,9 +50,4 @@ async function fetchData({ dateRange }: Record<string, any>) {
   }
   await loader.hide();
 }
-
-function drilldownTitleBuilder (data: DrilldownData) {
-  return `${data.row.age_group} ${data.column.label} ${data.row.gender}s`;
-}
-
 </script>
