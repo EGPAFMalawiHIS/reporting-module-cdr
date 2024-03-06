@@ -25,10 +25,9 @@ defineProps<{
     <ion-icon :icon="caretDown" v-if="items?.length"></ion-icon>
   </ion-item>
   <ion-popover :trigger="label" trigger-action="click" v-if="items?.length" dismissOnSelect>
-    <ion-content style="width: max-content;">
+    <ion-content style="width: 100%">
       <ion-list>
         <ion-item v-for="item of items" :key="item.label" @click="item.action" button >
-          <ion-icon v-if="item.icon" :icon="item.icon" slot="start" style="margin-right: 1rem;"></ion-icon>
           <ion-label>{{ item.label }}</ion-label>
         </ion-item>
       </ion-list>
