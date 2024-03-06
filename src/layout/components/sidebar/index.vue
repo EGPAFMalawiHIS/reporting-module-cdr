@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import SideMenuItem from './SideMenuItem.vue';
-import { resolveImage } from '@/utils/image';
 import { routes } from "@/router";
 import { 
   IonMenu, 
@@ -9,7 +8,6 @@ import {
   IonContent, 
   IonList,
   IonItem,
-  IonThumbnail,
   IonLabel
 } from '@ionic/vue';
 </script>
