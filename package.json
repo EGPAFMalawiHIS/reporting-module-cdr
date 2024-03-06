@@ -24,7 +24,6 @@
     "@vuepic/vue-datepicker": "^7.4.1",
     "apexcharts": "^3.44.0",
     "dayjs": "^1.11.10",
-    "emr-api-client": "file:../emr-api-client",
     "ionicons": "^7.0.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.1",

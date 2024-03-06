@@ -3,7 +3,7 @@ import { ApiRequestParam } from "@/interfaces";
 import { uniq } from "@/utils/arrays";
 import HisDate from '@/utils/his_date';
 import { parameterizeUrl } from "@/utils/url";
-import { ApiCore } from "emr-api-client";
+import apiClient from "@/api";;
 
 export type AgeGroup = string;
 export type IndicatorData = Record<string, Array<number>>;
@@ -65,8 +65,7 @@ export class ReportService {
   }
 
   async getReport<T = any>(name: string, params?: ApiRequestParam) {
-    const res = await ApiCore.getJson<T>(parameterizeUrl(name, this.buildParams(params)));
-    if(res.ok) return res.data; 
+    return apiClient.getJson<T>(parameterizeUrl(name, this.buildParams(params)));
   }
 
   /**
@@ -74,10 +73,9 @@ export class ReportService {
    */
   async getMaternalStatus(patientIds: number[], reportDefinition = 'pepfar') {
     const url = parameterizeUrl("vl_maternal_status", this.buildParams({ 'report_definition': reportDefinition }));
-    const res = await ApiCore.postJson<MaternityData>(url, {
+    return apiClient.postJson<MaternityData>(url, {
       'patient_ids': patientIds
     })
-    return res.data ??{ FP: [], FBf: []}
   }
 
   async getMaternityData(femaleData: Record<string, Array<number>>, indicators: Array<string>, reportDefinition = 'pepfar') {

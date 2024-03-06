@@ -5,7 +5,7 @@ import {
   TableFilterInterface, 
 } from '@uniquedj95/vtable';
 import dayjs from 'dayjs';
-import { ApiCore } from 'emr-api-client';
+import apiClient from "@/api";;
 import jsPDF, { EncryptionOptions } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { get, sanitizeStr } from './common';
@@ -29,13 +29,13 @@ const { facilityUUID } = useFacility();
 
 /**
  * Creates a header with encryption options for a PDF document.
- * Uses the username from ApiCore as both the user and owner password.
+ * Uses the username from apiClient as both the user and owner password.
  * Sets the user permissions to allow printing only.
  *
  * @returns {Record<"encryption", EncryptionOptions>} Encryption options for the PDF.
  */
 function getEncryptionHeader(): Record<"encryption", EncryptionOptions> {
-  const password = ApiCore.getUsername();
+  const password = apiClient.getUsername();
   return {
     encryption: {
       userPassword: password,

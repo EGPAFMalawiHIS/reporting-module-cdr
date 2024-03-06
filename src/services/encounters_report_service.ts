@@ -1,4 +1,4 @@
-import { ApiCore } from "emr-api-client";
+import apiClient from "@/api";;
 import { ReportService } from "./report_service";
 import { encounterTypes as enc } from "@/constants";
 import { parameterizeUrl } from "@/utils/url";
@@ -41,8 +41,8 @@ export class EncounterReportService extends ReportService {
   async getStats () {
     const encounter_types = Object.values(encounters);
     const url = parameterizeUrl('reports/encounters', this.buildParams()) ;
-    const userRes = await ApiCore.postJson<any>(url,  { encounter_types });
-    const facilityRes = await ApiCore.postJson<any>(url,  { encounter_types, all: true });
+    const userRes = await apiClient.postJson<any>(url,  { encounter_types });
+    const facilityRes = await apiClient.postJson<any>(url,  { encounter_types, all: true });
     return this.buildEncounters(userRes.data, facilityRes.data);
   }
 }

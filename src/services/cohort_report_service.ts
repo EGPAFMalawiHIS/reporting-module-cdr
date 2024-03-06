@@ -1,5 +1,5 @@
 import { ReportService } from "./report_service";
-import { ApiCore } from 'emr-api-client';
+import apiClient from "@/api";;
 import { ApiRequestParam } from '@/interfaces';
 
 export class CohortReportService extends ReportService {
@@ -20,7 +20,7 @@ export class CohortReportService extends ReportService {
   }
 
   getCohortDrillDown(resourceId: string) {
-    return ApiCore.getJson('cohort_report_drill_down', {
+    return apiClient.getJson('cohort_report_drill_down', {
       id: resourceId,
       date: this.date,
       'program_id': this.programId
@@ -44,6 +44,6 @@ export class CohortReportService extends ReportService {
   }
 
   requestCohort(params: ApiRequestParam) {
-    return ApiCore.getJson<any>(`programs/${this.programId}/reports/cohort`, params);
+    return apiClient.getJson<any>(`programs/${this.programId}/reports/cohort`, params);
   }
 }
