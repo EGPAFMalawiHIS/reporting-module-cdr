@@ -79,7 +79,7 @@ export default new class ApiClient {
     if (config) return JSON.parse(config);
     return {
       host: "localhost",
-      port: 9000,
+      port: 3000,
       protocol: "http"
     }
   }
