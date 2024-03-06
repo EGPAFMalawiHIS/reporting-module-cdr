@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { pieChart, speedometer } from 'ionicons/icons';
-import { ApiCore } from 'emr-api-client';
 import { mohReports, pepfarReports } from './reports';
 
 /*
@@ -44,11 +43,6 @@ export const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: "/login",
-    component: () => import("@/views/login.vue"),
-    meta: { hidden: true }
-  },
-  {
     path: "/reports", 
     component: () => import("@/layout/index.vue"),
     meta: {
@@ -65,15 +59,6 @@ export const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
-})
-
-router.beforeEach((to, _from, next) => {
-  const whitelisted = ["/login", "/test-form"]
-  if(!ApiCore.isLoggedIn() && !whitelisted.includes(to.path)) {
-    next("/login");
-  } else {
-    next();
-  }
 })
 
 export default router
