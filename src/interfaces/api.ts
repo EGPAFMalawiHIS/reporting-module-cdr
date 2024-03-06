@@ -1,0 +1,1 @@
+export type ApiRequestParam = Record<string, string | boolean | number>;

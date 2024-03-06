@@ -1,0 +1,85 @@
+:root {
+  --font-size-sm: 1rem;
+  --font-size-md: 1.2rem;
+  --font-size-lg: 1.4rem;
+  --font-size-xl: 1.8rem; 
+}
+
+body {
+  font-family: "Nimbus Sans L", "Arial Narrow", sans-serif;
+  font-size: var(--font-size-sm);
+}
+
+.text-sm { font-size: var(--font-size-sm); }
+.text-md { font-size: var(--font-size-md); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+
+a {
+  text-decoration: none;
+}
+
+.alert-confirmation {
+  --min-height: 400px;
+  --min-width: 500px;
+}
+
+.box-input, .box {
+  border-color: #a3a3a3;
+  border-width: thin;
+  border-style: solid;
+  border-radius: 3px;
+  font-weight: 400;
+}
+
+.box-input-error {
+  border-color: #ff0000;
+  border-width: thin;
+  border-style: solid;
+  border-radius: 3px;
+}
+
+.checkbox-label {
+  color: rgb(67, 149, 204);
+  font-weight: bold;
+}
+
+.checkbox-label > ion-checkbox {
+  --size: 14px!important;
+}
+
+.custom-modal::part(content) {
+  width: 90%;
+  height: fit-content;
+  max-height: 80%;
+  padding-bottom: 1rem;
+  overflow: auto !important;
+}
+
+th, td {
+  font-size: var(--font-size-sm);
+}
+
+.vs__search, .vs__search:focus, .native-input.sc-ion-input-md {
+  padding: 2px 7px !important;
+}
+
+.sc-ion-input-md-h {
+  min-height: 36px !important;
+  max-height: 36px !important;
+  height: 36px !important;
+  overflow: auto;
+}
+
+.inner-input-box div {
+  flex-wrap: nowrap !important;
+}
+
+.inner-input-box ion-chip {
+  font-size: small !important;
+}
+
+.inner-input-box .sc-ion-input-md-h input, #ion-input-0 {
+  min-width: 10px !important;
+  width: min-content !important;
+}
