@@ -13,8 +13,8 @@ function loadAppVersions () {
 }
 
 async function loadApiVersion () {
-  const res = await apiClient.getJson<any>('version');
-  apiVersion.value = res.data['System version'] || '-';
+  const data = await apiClient.getJson<any>('version');
+  apiVersion.value = data['System version'] || '-';
 }
 
 function isValidApiVersion() {
