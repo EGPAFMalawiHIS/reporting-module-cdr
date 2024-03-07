@@ -23,6 +23,14 @@ export const mohReports: RouteRecordRaw = {
         title: 'Regimen',
         img: 'reports/stats.png',
       }      
+    },    
+    {
+      path: "regimen_distribution_by_weight",
+      component: () => import("@/views/reports/moh/RegimenDistribution.vue"),
+      meta: {
+        title: 'Regimen Distribution By Weight',
+        img: 'reports/electronics.png',
+      }      
     },
     {
       path: "disaggregated",
@@ -46,6 +54,14 @@ export const mohReports: RouteRecordRaw = {
       meta: {
         title: 'TPT Cohort',
         img: 'reports/cohort.png',
+      }      
+    },       
+    {
+      path: "tpt_initiation",
+      component: () => import("@/views/reports/moh/TptNewInitiation.vue"),
+      meta: {
+        title: 'TPT New Initiation',
+        img: 'reports/new_initiation.png',
       }      
     },
     {
