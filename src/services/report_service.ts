@@ -13,7 +13,7 @@ export interface MaternityData {
   FP: Array<number>;
 }
 
-export type AggregatedReportData<T = any, K = IndicatorData> = Record<Gender, {
+export type AggregatedReportData<T = any, K = any> = Record<Gender, {
   rows: Array<T>;
   aggregate: K;
 }>;
