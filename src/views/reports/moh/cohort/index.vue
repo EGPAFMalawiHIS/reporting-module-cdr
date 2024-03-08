@@ -143,19 +143,19 @@ async function fetchData (regenerate = false) {
   }
 
   const response = await report.requestCohort(data);
-  if (response?.ok || response.httpStatusResponse === 204) {
+  if (response && [204, 200].includes(response.status)) {
     const interval = setInterval(async () => {
       data.regenerate = false
       const res = await report.requestCohort(data);
-      if (res?.httpStatusResponse === 200) {
-        const cohortData = res.data;
+      if (res?.status === 200) {
+        const cohortData = await res.json();
         cohort.value = cohortData.values
         indicators.value = toIndicators(cohortData.values)
         loader.hide();
         clearInterval(interval)
         componentKey.value++;
       }
-    }, 3000)
+    }, 60000)
   }
 }
 

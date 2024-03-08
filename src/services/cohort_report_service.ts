@@ -30,6 +30,7 @@ export class CohortReportService extends ReportService {
   qaurterRequestParams() {
     return { 
       name: this.quarter,
+      location: this.locationId,
       regenerate: this.regenerate 
     }
   }
@@ -39,11 +40,12 @@ export class CohortReportService extends ReportService {
       name: `Cohort-${this.startDate}-${this.endDate}`,
       'start_date': this.startDate,
       'end_date': this.endDate,
-      regenerate: this.regenerate
+      regenerate: this.regenerate,
+      location_id: this.locationId,
     };
   }
 
   requestCohort(params: ApiRequestParam) {
-    return apiClient.getJson<any>(`programs/${this.programId}/reports/cohort`, params);
+    return apiClient.getAjax(`/reports/cohort`, params);
   }
 }

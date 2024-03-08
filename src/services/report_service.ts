@@ -25,6 +25,7 @@ export class ReportService {
   endDate: string;
   programId: number;
   useDefaultParams: boolean;
+  locationId: number;
 
   constructor() {
     this.programId = PROGRAM_ID;
@@ -32,6 +33,7 @@ export class ReportService {
     this.endDate = "";
     this.startDate = "";
     this.useDefaultParams = true;
+    this.locationId = 413;
   }
 
   setDate(date: string) {
