@@ -1,26 +1,18 @@
 <script setup lang="ts">
 import { IonApp } from '@ionic/vue';
-import useAppInfo from './composables/appInfo';
 import 'nprogress/nprogress.css'
 import nprogress from "nprogress";
 import { computed, defineAsyncComponent, ref } from 'vue';
 import { alertConfirmation } from './utils/alerts';
 import { useRoute } from 'vue-router';
-import useFacility from './composables/useFacility';
 import ApiClient from "@/api";
 
 const ConnectionError = defineAsyncComponent(() => import("@/components/ConnectionError.vue"));
 
 const route = useRoute();
-const { loadApiVersion, loadAppVersions } = useAppInfo();
-const { setLocation } = useFacility();
 
 const healthCheckInterval = ref<NodeJS.Timeout | null>(null);
 const isNotConfigPage = computed(() => route.name !== "Network Settings")
-
-loadApiVersion();
-loadAppVersions();
-setLocation();
 
 nprogress.configure({ 
   easing: 'ease', 
