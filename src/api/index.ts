@@ -196,6 +196,22 @@ export default new class ApiClient {
     return this.handleResponse<T>(response);
   }
 
+  async getAjax(uri: string, params?: ApiRequestParam) {
+    const method = "GET"
+    this.triggerEvent("beforeRequest", { uri, method, params });
+    const fullURL = await this.expandPath(uri, params);
+    
+    try {
+      const response = await fetch(fullURL, { method, mode: "cors", headers: this.getRequestHeaders()});
+      this.triggerEvent("afterRequest", {uri, method, params, response });
+      return response;
+    } catch (e) {
+      if(/NetworkError|Failed to fetch/i.test(`${e}`)) {
+        this.triggerEvent("serverClash")
+      }
+    }
+  }
+
   /**
    * Perform a GET request and return the response data as JSON.
    *
