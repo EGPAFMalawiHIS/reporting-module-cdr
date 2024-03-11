@@ -3,7 +3,8 @@ import { ApiRequestParam } from "@/interfaces";
 import { uniq } from "@/utils/arrays";
 import HisDate from '@/utils/his_date';
 import { parameterizeUrl } from "@/utils/url";
-import apiClient from "@/api";;
+import apiClient from "@/api";import useFacility from "@/composables/useFacility";
+;
 
 export type AgeGroup = string;
 export type IndicatorData = Record<string, Array<number>>;
@@ -33,7 +34,7 @@ export class ReportService {
     this.endDate = "";
     this.startDate = "";
     this.useDefaultParams = true;
-    this.locationId = 413;
+    this.locationId = useFacility().facility.value.id;
   }
 
   setDate(date: string) {
@@ -55,10 +56,10 @@ export class ReportService {
   }
 
   protected buildParams(params?: ApiRequestParam) {
-    let p: ApiRequestParam = {};
+    let p: ApiRequestParam = { location: this.locationId };
     if(this.useDefaultParams) {
       p['date'] = this.date;
-      p['program_id'] = this.programId;
+      // p['program_id'] = this.programId;
     }
     if(this.startDate) p['start_date'] = this.startDate;
     if(this.endDate) p['end_date'] = this.endDate;
@@ -67,7 +68,7 @@ export class ReportService {
   }
 
   async getReport<T = any>(name: string, params?: ApiRequestParam) {
-    return apiClient.getJson<T>(parameterizeUrl(name, this.buildParams(params)));
+    return apiClient.getJson<T>(parameterizeUrl(`reports/${name}`, this.buildParams(params)));
   }
 
   /**
