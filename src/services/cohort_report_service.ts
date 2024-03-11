@@ -41,7 +41,7 @@ export class CohortReportService extends ReportService {
       'start_date': this.startDate,
       'end_date': this.endDate,
       regenerate: this.regenerate,
-      location_id: this.locationId,
+      location: this.locationId,
     };
   }
 

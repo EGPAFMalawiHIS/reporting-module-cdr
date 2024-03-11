@@ -12,34 +12,35 @@ import {
 } from '@ionic/vue';
 import useFacility from '@/composables/useFacility';
 
-const { facilityName } = useFacility();
+const { facility } = useFacility();
 const locationsOptions = [
-  { label: "Test Location 1 sdygdw sdfvweui sdiubweh ", value: "Test Location 1" },
-  { label: "Test Location 2", value: "Test Location 2" },
-  { label: "Test Location 3", value: "Test Location 3" },
-  { label: "Test Location 4", value: "Test Location 4" },
-  { label: "Test Location 1", value: "Test Location 1" },
-  { label: "Test Location 2", value: "Test Location 2" },
-  { label: "Test Location 3", value: "Test Location 3" },
-  { label: "Test Location 4", value: "Test Location 4" },
-  { label: "Test Location 1", value: "Test Location 1" },
-  { label: "Test Location 2", value: "Test Location 2" },
-  { label: "Test Location 3", value: "Test Location 3" },
-  { label: "Test Location 4", value: "Test Location 4" },
+  { name: "Test Location 1", id: 1 },
+  { name: "Test Location 2", id: 2 },
+  { name: "Test Location 3", id: 3 },
+  { name: "Test Location 4", id: 4 },
+  { name: "Test Location 1", id: 11 },
+  { name: "Test Location 2", id: 10 },
+  { name: "Test Location 3", id: 8 },
+  { name: "Test Location 4", id: 5 },
+  { name: "Test Location 1", id: 12 },
+  { name: "Test Location 2", id: 9 },
+  { name: "Test Location 3", id: 6 },
+  { name: "Test Location 4", id: 7 },
 ]
 
 function handleFilter(e: Event) {
   console.log((e.target as HTMLInputElement).value);
 }
 
-function onSelectHandler (value: string) {
-  facilityName.value = value;
+function onSelectHandler (value: number) {
+  const f = locationsOptions.find(l => l.id === value)
+  if(f) facility.value = f;
 }
 </script>
 
 <template>
   <ion-item id="location-filter" button lines="none">
-    <span style="font-size: 14px; margin-right: 5px;">{{ `Location: ${ facilityName }` }}</span> 
+    <span style="font-size: 14px; margin-right: 5px;">{{ `Location: ${ facility.name }` }}</span> 
     <ion-icon :icon="caretDown"></ion-icon>
   </ion-item>
   <ion-popover trigger="location-filter" trigger-action="click" v-if="locationsOptions?.length">
@@ -54,8 +55,8 @@ function onSelectHandler (value: string) {
     </ion-header>
     <ion-content style="max-height: 350px;">
       <ion-list>
-        <ion-item v-for="location of locationsOptions" :key="location.label" @click="onSelectHandler(location.value)" button >
-          <ion-label>{{ location.label }}</ion-label>
+        <ion-item v-for="location of locationsOptions" :key="location.name" @click="onSelectHandler(location.id)" button >
+          <ion-label>{{ location.name }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-content>

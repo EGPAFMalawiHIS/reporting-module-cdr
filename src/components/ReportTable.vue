@@ -173,7 +173,7 @@ const pickerDate = ref("");
 const filterValues = ref({} as Record<string, any>);
 const filename = computed(() => sanitizeStr(`
   ${props.reportType} 
-  ${useFacility().facilityName.value } 
+  ${useFacility().facility.value.name } 
   ${(props.filename || props.title).replace(props.reportType, "")} 
   ${props.period ? props.period : props.date }
 `));
