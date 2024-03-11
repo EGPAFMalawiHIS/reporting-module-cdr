@@ -220,7 +220,7 @@ export default new class ApiClient {
    * @returns A Promise that resolves to the response data as JSON.
    */
   getJson<T = any>(uri: string, params?: ApiRequestParam): Promise<T> {
-    return this.execFetch(uri, "GET", params);
+    return this.execFetch<T>(uri, "GET", params);
   }
 
   /**
@@ -232,7 +232,7 @@ export default new class ApiClient {
    * @returns A Promise that resolves to the response data as JSON.
    */
   postJson<T = any>(uri: string, data?: ApiRequestData, params?: ApiRequestParam): Promise<T> {
-    return this.execFetch(uri, "POST", params, data);
+    return this.execFetch<T>(uri, "POST", params, data);
   }
 
   /**
@@ -244,7 +244,7 @@ export default new class ApiClient {
    * @returns A Promise that resolves to the response data as JSON.
    */
   async putJson<T = any>(url: string, data: ApiRequestData, params?: ApiRequestParam): Promise<T> {
-    return this.execFetch(url, "PUT", params, data)
+    return this.execFetch<T>(url, "PUT", params, data)
   }
 
   /**
