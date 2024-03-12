@@ -10,22 +10,17 @@ import {
   IonSearchbar,
   IonHeader,
 } from '@ionic/vue';
-import useFacility from '@/composables/useFacility';
+import useFacility, { Facility } from '@/composables/useFacility';
 
 const { facility } = useFacility();
-const locationsOptions = [
-  { name: "Test Location 1", id: 1 },
-  { name: "Test Location 2", id: 2 },
-  { name: "Test Location 3", id: 3 },
-  { name: "Test Location 4", id: 4 },
-  { name: "Test Location 1", id: 11 },
-  { name: "Test Location 2", id: 10 },
-  { name: "Test Location 3", id: 8 },
-  { name: "Test Location 4", id: 5 },
-  { name: "Test Location 1", id: 12 },
-  { name: "Test Location 2", id: 9 },
-  { name: "Test Location 3", id: 6 },
-  { name: "Test Location 4", id: 7 },
+const locationsOptions: Array<Facility> = [
+  { name: "Test Location 1", uuid: "", id: 1 },
+  { name: "Test Location 2", uuid: "", id: 2 },
+  { name: "Test Location 3", uuid: "", id: 3 },
+  { name: "Test Location 4", uuid: "", id: 4 },
+  { name: "Test Location 1", uuid: "", id: 11 },
+  { name: "Test Location 2", uuid: "", id: 10 },
+  { name: "Test Location 3", uuid: "", id: 8 },
 ]
 
 function handleFilter(e: Event) {

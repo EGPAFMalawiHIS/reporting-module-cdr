@@ -1,12 +1,14 @@
 import { ref } from "vue";
 
-interface Facility {
+export interface Facility {
   name: string;
+  uuid: string;
   id: number;
 };
 
 const facility = ref<Facility>({
   name: "Mimosa Facility",
+  uuid: "",
   id: 413
 });
 

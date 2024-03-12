@@ -10,7 +10,6 @@ import autoTable from 'jspdf-autotable';
 import { get, sanitizeStr } from './common';
 import useAppInfo from '@/composables/appInfo';
 import useFacility from '@/composables/useFacility';
-import { alertConfirmation } from './alerts';
 
 interface ExportOptions {
   columns: TableColumnInterface[];
@@ -23,7 +22,7 @@ interface ExportOptions {
 }
 
 const { appVersion, apiVersion } = useAppInfo();
-const { facilityUUID } = useFacility();
+const { facility } = useFacility();
 
 /**
  * Determines if a column should be included in the export based on column exportable property.
@@ -82,7 +81,7 @@ function toCsvString(opts: ExportOptions): string {
   if (period) str += "\n" + `Quarter: ${period}`;
   str += "\n" + `e-Mastercard Version : ${appVersion.value}`;
   str += "\n" + `API Version ${apiVersion.value}`;
-  str += "\n" + `Site UUID: ${facilityUUID.value}`;
+  str += "\n" + `Site UUID: ${facility.value.uuid}`;
   return str;
 }
 
