@@ -17,14 +17,6 @@ export const pepfarReports: RouteRecordRaw = {
       }      
     },
     {
-      path: "defaulters",
-      component: () => import("@/views/reports/pepfar/DefaultersReport.vue"),
-      meta: {
-        title: 'Defaulters',
-        img: 'reports/defaulter-list.png',
-      }      
-    },
-    {
       path: "tx_curr_mmd",
       component: () => import("@/views/reports/pepfar/TxCurrMMD.vue"),
       meta: {
