@@ -28,11 +28,11 @@ export class RegimenReportService extends ReportService {
     }
 
     getTptNewInitiations() {
-        return this.getReport(`programs/${this.programId}/reports/tpt_newly_initiated`)
+        return this.getReport(`tpt_newly_initiated`)
     }
 
     getRegimenFormulationReport(regimen: string, formulation: string) {
-        return this.getReport(`programs/${this.programId}/reports/regimens_and_formulations`, { regimen, formulation })
+        return this.getReport(`regimens_and_formulations`, { regimen, formulation })
     }
 
     getRegimenReport() {
@@ -58,7 +58,7 @@ export class RegimenReportService extends ReportService {
     }
 
     async getRegimensByWeight() {
-        const data = await this.getReport<RegimenDistributionAPIData>(`programs/${this.programId}/reports/regimens_by_weight_and_gender`);
+        const data = await this.getReport<RegimenDistributionAPIData>(`regimens_by_weight_and_gender`);
         const males = [] as RegimenDistributionReportData;
         const females = [] as RegimenDistributionReportData;
 

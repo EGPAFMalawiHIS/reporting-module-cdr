@@ -48,7 +48,7 @@ export class TptReportService extends ReportService {
 
   async getTptNewInitiations() {
     return this.tptInitiationBuilder(
-      await this.getReport(`programs/${this.programId}/reports/tpt_newly_initiated`)
+      await this.getReport(`tpt_newly_initiated`)
     )
   }
 

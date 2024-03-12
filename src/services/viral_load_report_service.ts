@@ -35,11 +35,11 @@ export class ViralLoadReportService extends ReportService {
   constructor() { super() }
 
   getVlCollection() {
-    return this.getReport(`programs/${this.programId}/reports/vl_collection`)
+    return this.getReport(`vl_collection`)
   }
   
   async getTxPVLS(params = {} as Record<string, any>) {
-    const data = await  this.getReport<TxPVLSReportData>(`programs/${this.programId}/reports/viral_load_coverage`, {
+    const data = await  this.getReport<TxPVLSReportData>(`viral_load_coverage`, {
       'rebuild_outcomes': true,
       ...params
     });
@@ -47,7 +47,7 @@ export class ViralLoadReportService extends ReportService {
   }
 
   async getViralLoad(params = {} as Record<string, any>) {
-    const data = await this.getReport(`programs/${this.programId}/reports/vl_disaggregated`, params);
+    const data = await this.getReport(`vl_disaggregated`, params);
     return this.vlReportBuilder(data);
   }
 
