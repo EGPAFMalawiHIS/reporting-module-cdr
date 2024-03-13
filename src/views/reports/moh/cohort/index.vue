@@ -178,17 +178,23 @@ function printSpec() {
   }
 }
 
-function toCSV () {
-  const columns = [
+function getCSVRows() {
+  return Object.entries(indicators.value).map(([indicator, value]) => ({ indicator, value }))
+}
+
+function getCSVColumns () {
+  return [
     { label: "Indicator", path: "indicator" },
     { label: "Value", path: "value" },
-  ];
-  const rows = Object.entries(indicators.value).map(([indicator, value]) => ({
-    indicator,
-    value
-  }))
-  const filename = `MOH ${useFacility().facilityName.value } cohort report ${period.value}`
-  exportToCSV({ columns, rows, filename })
+  ]
+}
+
+function toCSV () {
+  return exportToCSV({ 
+    columns: getCSVColumns(), 
+    rows: getCSVRows(), 
+    filename: `MOH ${useFacility().facility.value.name } cohort report ${period.value}`
+  })
 }
 </script>
 
