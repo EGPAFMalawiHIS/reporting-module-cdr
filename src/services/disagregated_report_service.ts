@@ -44,7 +44,7 @@ export class DisaggregatedReportService extends ReportService {
   getCohort(initialize = false) {
     return this.getReport('cohort_disaggregated', {
       'age_group': `${this.ageGroup}`,
-      'rebuild_outcome': `${this.rebuildOutcome}`,
+      'rebuild': `${this.rebuildOutcome}`,
       'initialize': `${initialize}`,
       'quarter': this.quarter,
     })
