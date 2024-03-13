@@ -46,6 +46,6 @@ export class CohortReportService extends ReportService {
   }
 
   requestCohort(params: ApiRequestParam) {
-    return apiClient.getAjax(`/reports/cohort`, params);
+    return apiClient.getAjax(`reports/cohort`, params);
   }
 }
