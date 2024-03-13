@@ -137,7 +137,7 @@ async function fetchData (regenerate = false) {
     period.value = `Custom ${report.getDateIntervalPeriod()}`;
     data = report.datePeriodRequestParams();
   } else {
-    setReportPeriod(quarter.value?.label, quarter.value?.other.start, quarter.value?.other.start);
+    setReportPeriod(quarter.value?.label, quarter.value?.other.start, quarter.value?.other.end);
     period.value = quarter.value?.label;
     data = report.qaurterRequestParams();
   }
