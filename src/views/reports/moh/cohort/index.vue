@@ -155,7 +155,7 @@ async function fetchData (regenerate = false) {
         clearInterval(interval)
         componentKey.value++;
       }
-    }, 60000)
+    }, 3000)
   }
 }
 
