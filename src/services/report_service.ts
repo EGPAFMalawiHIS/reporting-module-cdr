@@ -26,7 +26,6 @@ export class ReportService {
   endDate: string;
   programId: number;
   useDefaultParams: boolean;
-  locationId: number;
 
   constructor() {
     this.programId = PROGRAM_ID;
@@ -34,7 +33,6 @@ export class ReportService {
     this.endDate = "";
     this.startDate = "";
     this.useDefaultParams = true;
-    this.locationId = useFacility().facility.value.id;
   }
 
   setDate(date: string) {
@@ -56,7 +54,7 @@ export class ReportService {
   }
 
   protected buildParams(params?: ApiRequestParam) {
-    let p: ApiRequestParam = { location: this.locationId };
+    let p: ApiRequestParam = { location: useFacility().facility.value.id };
     if(this.useDefaultParams) {
       p['date'] = this.date;
       // p['program_id'] = this.programId;

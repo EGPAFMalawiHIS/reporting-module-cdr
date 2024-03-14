@@ -1,5 +1,6 @@
 import { ReportService } from "./report_service";
-import apiClient from "@/api";;
+import apiClient from "@/api";import useFacility from "@/composables/useFacility";
+;
 import { ApiRequestParam } from '@/interfaces';
 
 export class CohortReportService extends ReportService {
@@ -30,7 +31,7 @@ export class CohortReportService extends ReportService {
   qaurterRequestParams() {
     return { 
       name: this.quarter,
-      location: this.locationId,
+      location: useFacility().facility.value.id,
       regenerate: this.regenerate 
     }
   }
@@ -41,7 +42,7 @@ export class CohortReportService extends ReportService {
       'start_date': this.startDate,
       'end_date': this.endDate,
       regenerate: this.regenerate,
-      location: this.locationId,
+      location: useFacility().facility.value.id,
     };
   }
 
