@@ -75,10 +75,14 @@ export class ReportService {
    * @deprecated this will be set to private in the next tag. Use {@link getMaternityData} instead.
    */
   async getMaternalStatus(patientIds: number[], reportDefinition = 'pepfar') {
-    const url = parameterizeUrl("vl_maternal_status", this.buildParams({ 'report_definition': reportDefinition }));
-    return apiClient.postJson<MaternityData>(url, {
-      'patient_ids': patientIds
-    })
+    // const url = parameterizeUrl("vl_maternal_status", this.buildParams({ 'report_definition': reportDefinition }));
+    // return apiClient.postJson<MaternityData>(url, {
+    //   'patient_ids': patientIds
+    // })
+    return {
+      FBf: [],
+      FP: []
+    } as MaternityData
   }
 
   async getMaternityData(femaleData: Record<string, Array<number>>, indicators: Array<string>, reportDefinition = 'pepfar') {
