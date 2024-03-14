@@ -34,7 +34,7 @@ import {
   IonLabel,
   IonSearchbar,
   IonHeader,
-  alertController,
+  popoverController,
 } from '@ionic/vue';
 import useFacility, { Facility } from '@/composables/useFacility';
 import { onMounted, ref } from 'vue';
@@ -50,7 +50,7 @@ async function handleFilter(e: Event) {
 function onSelectHandler (value: number) {
   const selectedFacility = facilities.value.find(facility => facility.id === value);
   if(selectedFacility) facility.value = selectedFacility;
-  alertController.getTop().then(v => v && alertController.dismiss());
+  popoverController.getTop().then(v => v && popoverController.dismiss());
 }
 
 onMounted(async () => facilities.value = await loadFacilities());
