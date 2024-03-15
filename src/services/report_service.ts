@@ -54,7 +54,7 @@ export class ReportService {
   }
 
   protected buildParams(params?: ApiRequestParam) {
-    let p: ApiRequestParam = { location: useFacility().facility.value.id };
+    let p: ApiRequestParam = { location: useFacility().facility.value?.id ?? -1 };
     if(this.useDefaultParams) {
       p['date'] = this.date;
       // p['program_id'] = this.programId;
