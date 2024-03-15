@@ -15,7 +15,7 @@
     </ion-header>
     <ion-content style="max-height: 350px;">
       <ion-list>
-        <ion-item v-for="location of facilities" :key="location.name" @click="onSelectHandler(location.id)" button >
+        <ion-item v-for="location of resultSet.slice(0, 10)" :key="location.name" @click="onSelectHandler(location.id)" button >
           <ion-label>{{ location.name }}</ion-label>
         </ion-item>
       </ion-list>
@@ -37,14 +37,19 @@ import {
   popoverController,
 } from '@ionic/vue';
 import useFacility, { Facility } from '@/composables/useFacility';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const { facility, loadFacilities } = useFacility();
-const facilities = ref<Array<Facility>>([]); 
+const facilities = ref<Array<Facility>>([]);
+const resultSet = ref<Array<Facility>>([]);
 
 async function handleFilter(e: Event) {
   const filter = (e.target as HTMLInputElement).value;
-  facilities.value = facilities.value = await loadFacilities(filter);
+  // facilities.value = facilities.value = await loadFacilities(filter);
+  // use fazy search on facilities value based on input
+  const result = facilities.value.filter(facility => facility.name.toLowerCase().includes(filter.toLowerCase()));
+  // result set should always be 10 or less
+  resultSet.value = result.length > 10 ? result.slice(0, 10) : result;
 }
 
 function onSelectHandler (value: number) {
@@ -54,4 +59,6 @@ function onSelectHandler (value: number) {
 }
 
 onMounted(async () => facilities.value = await loadFacilities());
+// watch for changes in facilities
+watch(facilities, (newVal) => resultSet.value = newVal);
 </script>

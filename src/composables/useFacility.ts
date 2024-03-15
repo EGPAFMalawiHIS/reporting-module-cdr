@@ -16,7 +16,7 @@ const facility = ref<Facility>({
 
 // const facilities = ref<Array<Facility>>([]);
 
-async function loadFacilities(filter = "", page = 1, limit = 10): Promise<Facility[]> {
+async function loadFacilities(filter = "", page = 1, limit = 800): Promise<Facility[]> {
   const facilities = await ApiClient.getJson<Array<any>>('locations', {
     page,
     name: filter,
