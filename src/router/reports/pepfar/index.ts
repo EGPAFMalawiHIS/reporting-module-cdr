@@ -52,7 +52,7 @@ export const pepfarReports: RouteRecordRaw = {
       path: "tx_pvls",
       component: () => import("@/views/reports/pepfar/TxPVLS.vue"),
       meta: {
-        title: 'VL Coverage',
+        title: 'Tx PVLS',
         img: 'reports/viral_load.png',
       }      
     },
