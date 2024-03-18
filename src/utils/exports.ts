@@ -19,6 +19,7 @@ interface ExportOptions {
   period?: string;
   filters?: TableFilterInterface;
   canHorizontalPageBreak?: boolean;
+  appendFooter?: boolean;
 }
 
 const { appVersion, apiVersion } = useAppInfo();
@@ -62,6 +63,16 @@ function getExportableRows(columns: Array<TableColumnInterface>, rows: Array<any
   })
 }
 
+function getCsvFooter(quarter?: string, period?: string) {
+  let str = `Date Created:  ${dayjs().format('DD/MMM/YYYY HH:MM:ss')}`;
+  if (quarter) str += "\n" + `Quarter: ${quarter}`;
+  if (period) str += "\n" + `Quarter: ${period}`;
+  str += "\n" + `CDR Version : ${appVersion.value}`;
+  str += "\n" + `API Version ${apiVersion.value}`;
+  str += "\n" + `Site UUID: ${facility.value?.uuid ?? ''}`;
+  return str
+}
+
 /**
  * Converts table data into a CSV formatted string.
  * 
@@ -70,18 +81,13 @@ function getExportableRows(columns: Array<TableColumnInterface>, rows: Array<any
  * @param {ExportOptions} opts - Options for exporting, including columns, rows, and various metadata.
  * @returns {string} The table data in CSV format.
  */
-function toCsvString(opts: ExportOptions): string {
-  const { columns, rows, quarter, period, filters } = opts;
+export function toCsvString(opts: ExportOptions): string {
+  const { columns, rows, quarter, period, filters, appendFooter } = opts;
   const exportableColumns = getExportableHeadings(columns);
   const exportableRows = getExportableRows(columns, sortRows(rows, filters?.sort || []));
   let str = exportableColumns.join(",") + "\n"
   str += exportableRows.map(row => row.join(",")).join("\n");
-  str += "\n" + `Date Created:  ${dayjs().format('DD/MMM/YYYY HH:MM:ss')}`;
-  if (quarter) str += "\n" + `Quarter: ${quarter}`;
-  if (period) str += "\n" + `Quarter: ${period}`;
-  str += "\n" + `e-Mastercard Version : ${appVersion.value}`;
-  str += "\n" + `API Version ${apiVersion.value}`;
-  str += "\n" + `Site UUID: ${facility.value.uuid}`;
+  if(appendFooter !== false) str += "\n" + getCsvFooter(quarter, period);
   return str;
 }
 
@@ -106,7 +112,7 @@ export function exportToCSV(opts: ExportOptions) {
  * @param {ExportOptions} opts - Options for exporting, including columns, rows, and various settings for PDF generation.
  */
 export function exportToPDF(opts: ExportOptions) {
-  const {filename, canHorizontalPageBreak, columns, rows, filters } = opts
+  const { filename, canHorizontalPageBreak, columns, rows, filters } = opts
   const tableColumns: Array<Array<string>> = [ getExportableHeadings(columns) ];
   const tableRows: Array<Array<string>> = getExportableRows(columns, sortRows(rows, filters?.sort || []));
   const doc = new jsPDF()
