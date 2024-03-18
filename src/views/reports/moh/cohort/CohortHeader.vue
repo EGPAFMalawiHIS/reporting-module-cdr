@@ -7,7 +7,7 @@
     <tr>
       <td class="numbers">1.</td>
       <td class="row-title" style="border-right-style: solid; border-bottom: 0px !important; font-weight: bold;">Clinic name</td>
-      <td class="row-title" colspan="3" style="border-bottom-style: solid;">{{ facilityName }}</td>
+      <td class="row-title" colspan="3" style="border-bottom-style: solid;">{{ facility?.name ?? "" }}</td>
     </tr>
     <tr>
       <td class="numbers">2.</td>
@@ -40,7 +40,7 @@ const props = defineProps({
     default: ""
   }
 });
-const { facilityName } = useFacility();
+const { facility } = useFacility();
 const items = ['3.','4.','5.','6.','7.','8.','9.'];
 const period = computed(() => {
   const [quarter, startPeriod, , endPeriod] = props.reportparams.split(" ");
