@@ -116,11 +116,13 @@ export default new class ApiClient {
    * @param uri - The relative URI to expand.
    * @returns The complete API endpoint URL.
    */
-  private async expandPath(uri: string, params?: ApiRequestParam): Promise<string> {
+  private async expandPath(uri: string, params?: ApiRequestParam, baseUrl?: string ): Promise<string> {
     let _uri = uri.startsWith('/') ? uri.substring(1) : uri;
     _uri = this.parameterizeUrl(uri, params);
     const version = this.config.version ?? 'v1';
-    return `${this.config.protocol}://${this.config.host}:${this.config.port}/api/${version}/${_uri}`;
+    return baseUrl 
+      ? `${baseUrl}/${_uri}`
+      :  `${this.config.protocol}://${this.config.host}:${this.config.port}/api/${version}/${_uri}`;
   }
 
   /**
@@ -174,9 +176,9 @@ export default new class ApiClient {
    * @param data - Optional request data to send in the request body.
    * @returns A Promise that resolves to the response data from the fetch request.
    */
-  private async execFetch<T = any>(uri: string, method: ApiRequestMethod, params?: ApiRequestParam, data?: ApiRequestData): Promise<T> {
+  private async execFetch<T = any>(uri: string, method: ApiRequestMethod, params?: ApiRequestParam, data?: ApiRequestData, baseUrl?: string): Promise<T> {
     this.triggerEvent("beforeRequest", { uri, method, params, data });
-    const fullURL = await this.expandPath(uri, params);
+    const fullURL = await this.expandPath(uri, params, baseUrl);
     const options: RequestInit = { 
       method,
       mode: "cors", 
@@ -219,8 +221,8 @@ export default new class ApiClient {
    * @param params - Optional query parameters.
    * @returns A Promise that resolves to the response data as JSON.
    */
-  getJson<T = any>(uri: string, params?: ApiRequestParam): Promise<T> {
-    return this.execFetch<T>(uri, "GET", params);
+  getJson<T = any>(uri: string, params?: ApiRequestParam, baseUrl = ""): Promise<T> {
+    return this.execFetch<T>(uri, "GET", params, {}, baseUrl);
   }
 
   /**
@@ -231,8 +233,8 @@ export default new class ApiClient {
    * @param data - Optional data object
    * @returns A Promise that resolves to the response data as JSON.
    */
-  postJson<T = any>(uri: string, data?: ApiRequestData, params?: ApiRequestParam): Promise<T> {
-    return this.execFetch<T>(uri, "POST", params, data);
+  postJson<T = any>(uri: string, data?: ApiRequestData, params?: ApiRequestParam, baseUrl?: string): Promise<T> {
+    return this.execFetch<T>(uri, "POST", params, data, baseUrl);
   }
 
   /**

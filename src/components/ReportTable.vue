@@ -73,6 +73,8 @@ import {
 } from '@uniquedj95/vtable'
 import { toastWarning } from '@/utils/toasts';
 import { sync } from 'ionicons/icons';
+import { modal } from '@/utils/modal';
+import ValidationModal from './ValidationModal.vue';
 
 const emit = defineEmits<{
   (e: "generate", filters: Record<string, any>, rebuildCache: boolean): void,
@@ -224,7 +226,7 @@ const filters = computed<CustomFilterInterface[]>(() => {
 })
 
 const actionBtns = computed<ActionButtonInterface[]>(() => {
-  const btns = [...props.actionButtons];
+  const btns = [...props.actionButtons, getValidationBtn() ];
   if (props.canExportCsv) btns.push(getCsvExportBtn(filename.value, props.quarter?.label, props.period));
   if (props.canExportPDF) btns.push(getPdfExportBtn(filename.value, props.useSecureExport, props.quarter?.label, props.period));
   if(props.showRefreshButton) btns.push(getRefreshBtn());
@@ -239,6 +241,21 @@ function getRefreshBtn (): ActionButtonInterface {
     action: () => {
       if(isEmpty(filterValues.value)) return toastWarning("Invalid filters");
       emit("generate", filterValues.value, true);
+    } 
+  }
+}
+
+function getValidationBtn (): ActionButtonInterface {
+  return { 
+    label: "Validate Report",
+    color: 'primary', 
+    action: () => {
+      if(isEmpty(filterValues.value)) return toastWarning("Generate report first");
+      return modal.show(ValidationModal, {
+        columns: props.columns,
+        rows: props.rows,
+        reportName: props.title
+      })
     } 
   }
 }
