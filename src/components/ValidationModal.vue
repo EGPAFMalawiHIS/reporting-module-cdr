@@ -16,14 +16,10 @@
 
 <script setup lang="ts">
 import { IonCard, IonCardHeader, IonCardTitle, IonButton, IonCardContent, IonList, IonItem, IonLabel } from "@ionic/vue";
+import useVBoxValidator from "@/composables/useVBoxValidator";
 import { TableColumnInterface } from "@uniquedj95/vtable"
-import { toCsvString } from "@/utils/exports";
-import { PropType, onMounted, ref } from "vue";
-import { VBoxResult } from "@/interfaces/vbox";
+import { PropType, onMounted } from "vue";
 import { modal } from "@/utils/modal";
-import ApiClient from "@/api";
-
-
 
 const props = defineProps({
   reportName: {
@@ -40,17 +36,7 @@ const props = defineProps({
   }
 });
 
-const errors = ref<Array<string>>([]);
+const { errors, validateReport } = useVBoxValidator();
 
-function toErrorStrings (results: Array<VBoxResult>){
-  return results.map(result => result.table.message.replace("cum_", "Cumulative").replace("_", " "));
-}
-
-async function validateReport() {
-  const data = toCsvString({ columns: props.columns, rows: props.rows, filename: "", appendFooter: false });
-  const results = await ApiClient.postJson<Array<VBoxResult>>('validate_data', { data }, {}, "http://localhost:4001");
-  errors.value = toErrorStrings(results);
-}
-
-onMounted(() => validateReport());
+onMounted(() => validateReport(props.columns, props.rows));
 </script>
