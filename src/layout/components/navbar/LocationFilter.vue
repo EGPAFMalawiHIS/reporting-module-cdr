@@ -1,6 +1,6 @@
 <template>
   <ion-item id="location-filter" button lines="none">
-    <span style="font-size: 14px; margin-right: 5px;">{{ `Location: ${ facility.name }` }}</span> 
+    <span style="font-size: 14px; margin-right: 5px;">{{ `Location: ${ facility?.name ?? 'select facility'}` }}</span> 
     <ion-icon :icon="caretDown"></ion-icon>
   </ion-item>
   <ion-popover trigger="location-filter" trigger-action="click" v-if="facilities?.length">
@@ -38,6 +38,7 @@ import {
 } from '@ionic/vue';
 import useFacility, { Facility } from '@/composables/useFacility';
 import { onMounted, ref, watch } from 'vue';
+import { isEmpty } from '@/utils/common';
 
 const { facility, loadFacilities } = useFacility();
 const facilities = ref<Array<Facility>>([]);
@@ -57,6 +58,10 @@ function onSelectHandler (value: number) {
   if(selectedFacility) facility.value = selectedFacility;
   popoverController.getTop().then(v => v && popoverController.dismiss());
 }
+
+watch(facilities, facilities => {
+  if(!isEmpty(facilities)) facility.value = facilities[0];
+})
 
 onMounted(async () => facilities.value = await loadFacilities());
 // watch for changes in facilities

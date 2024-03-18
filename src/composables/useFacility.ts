@@ -8,11 +8,7 @@ export interface Facility {
   id: number;
 };
 
-const facility = ref<Facility>({
-  name: "Mimosa Facility",
-  uuid: "",
-  id: 413
-});
+const facility = ref<Facility>();
 
 // const facilities = ref<Array<Facility>>([]);
 

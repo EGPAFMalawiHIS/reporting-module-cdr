@@ -193,7 +193,7 @@ function toCSV () {
   return exportToCSV({ 
     columns: getCSVColumns(), 
     rows: getCSVRows(), 
-    filename: `MOH ${useFacility().facility.value.name } cohort report ${period.value}`
+    filename: `MOH ${useFacility().facility.value?.name } cohort report ${period.value}`
   })
 }
 </script>

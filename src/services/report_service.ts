@@ -54,7 +54,7 @@ export class ReportService {
   }
 
   protected buildParams(params?: ApiRequestParam) {
-    let p: ApiRequestParam = { location: useFacility().facility.value.id };
+    let p: ApiRequestParam = { location: useFacility().facility.value?.id ?? -1 };
     if(this.useDefaultParams) {
       p['date'] = this.date;
       // p['program_id'] = this.programId;
@@ -73,14 +73,10 @@ export class ReportService {
    * @deprecated this will be set to private in the next tag. Use {@link getMaternityData} instead.
    */
   async getMaternalStatus(patientIds: number[], reportDefinition = 'pepfar') {
-    // const url = parameterizeUrl("vl_maternal_status", this.buildParams({ 'report_definition': reportDefinition }));
-    // return apiClient.postJson<MaternityData>(url, {
-    //   'patient_ids': patientIds
-    // })
-    return {
-      FBf: [],
-      FP: []
-    } as MaternityData
+    return this.getReport<MaternityData>("vl_maternal_status", {
+      'patient_ids': patientIds.join(","),
+      'report_definition': reportDefinition
+    })
   }
 
   async getMaternityData(femaleData: Record<string, Array<number>>, indicators: Array<string>, reportDefinition = 'pepfar') {

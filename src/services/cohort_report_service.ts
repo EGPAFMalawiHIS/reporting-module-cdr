@@ -31,7 +31,7 @@ export class CohortReportService extends ReportService {
   qaurterRequestParams() {
     return { 
       name: this.quarter,
-      location: useFacility().facility.value.id,
+      location: useFacility().facility.value?.id,
       regenerate: this.regenerate 
     }
   }
@@ -42,7 +42,7 @@ export class CohortReportService extends ReportService {
       'start_date': this.startDate,
       'end_date': this.endDate,
       regenerate: this.regenerate,
-      location: useFacility().facility.value.id,
+      location: useFacility().facility.value?.id,
     };
   }
 
