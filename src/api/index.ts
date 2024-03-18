@@ -221,8 +221,8 @@ export default new class ApiClient {
    * @param params - Optional query parameters.
    * @returns A Promise that resolves to the response data as JSON.
    */
-  getJson<T = any>(uri: string, params?: ApiRequestParam, baseUrl = ""): Promise<T> {
-    return this.execFetch<T>(uri, "GET", params, {}, baseUrl);
+  getJson<T = any>(uri: string, params?: ApiRequestParam, baseUrl?: string): Promise<T> {
+    return this.execFetch<T>(uri, "GET", params, undefined, baseUrl);
   }
 
   /**
