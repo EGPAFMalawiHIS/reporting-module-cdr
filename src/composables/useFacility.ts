@@ -1,5 +1,4 @@
 import ApiClient from "@/api";
-import { isEmpty } from "@/utils/common";
 import { ref } from "vue";
 
 export interface Facility {
@@ -9,8 +8,6 @@ export interface Facility {
 };
 
 const facility = ref<Facility>();
-
-// const facilities = ref<Array<Facility>>([]);
 
 async function loadFacilities(filter = "", page = 1, limit = 800): Promise<Facility[]> {
   const facilities = await ApiClient.getJson<Array<any>>('locations', {
