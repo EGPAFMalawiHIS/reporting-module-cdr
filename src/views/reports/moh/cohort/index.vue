@@ -29,15 +29,16 @@
           <ion-col :size="useCustomQuarter ? '7' : '10'">
             <ion-button class="ion-float-right" color="primary" @click="toCSV" >CSV</ion-button>
             <ion-button class="ion-float-right" color="primary" @click="printSpec" >PDF</ion-button>
-            <ion-button class="ion-float-right" color="secondary" @click="goDisagreggatedReport" :disabled="hasInvalidFilters || isEmpty(indicators)">Disaggregated</ion-button>
-            <ion-button class="ion-float-right" color="warning" @click="fetchData(true)">Fresh Report</ion-button>
-            <ion-button class="ion-float-right" color="success" @click="fetchData()">Archived Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="goDisagreggatedReport" :disabled="hasInvalidFilters || isEmpty(indicators)">Disaggregated</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="validateReport(getCSVColumns(), getCSVRows())" :disabled="hasInvalidFilters || isEmpty(indicators)">Validate Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="fetchData(true)">Fresh Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="fetchData()">Archived Report</ion-button>
           </ion-col>
 
         </ion-row>
         <ion-row class="his-card">
           <ion-col size="12" :key="componentKey" id="report-content">
-            <cohort-v :indicators="indicators" style="font-weight: 600" />
+            <cohort-v :reportConsistencies="errors" style="font-weight: 600" />
             <cohort-h :reportparams="period" />
             <cohort-ft :indicators="indicators" />
           </ion-col>
@@ -64,6 +65,7 @@ import { parameterizeUrl } from "@/utils/url";
 import { exportToCSV } from "@/utils/exports";
 import useFacility from "@/composables/useFacility";
 import VSelect from "vue-select";
+import useVBoxValidator from "@/composables/useVBoxValidator";
 
 const router = useRouter();
 const componentKey = ref(0);
@@ -73,6 +75,7 @@ const dateRange = ref<string[]>([]);
 const indicators = ref({} as Record<string, any>);
 const cohort = ref({} as Record<string, any>);
 const report = new CohortReportService();
+const { errors, validateReport } = useVBoxValidator();
 const useCustomQuarter = computed(() => /custom/i.test(quarter.value?.label));
 const hasInvalidFilters = computed(() => {
   if(isEmpty(quarter.value)) return true;
@@ -150,7 +153,7 @@ async function fetchData (regenerate = false) {
       if (res?.status === 200) {
         const cohortData = await res.json();
         cohort.value = cohortData.values
-        indicators.value = toIndicators(cohortData.values)
+        indicators.value = toIndicators(cohortData.values);
         loader.hide();
         clearInterval(interval)
         componentKey.value++;
