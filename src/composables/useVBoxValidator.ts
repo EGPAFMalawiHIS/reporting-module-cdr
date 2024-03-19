@@ -23,9 +23,9 @@ export interface VBoxResultRule {
 }
 
 export interface HostConfig {
-  host: "localhost",
-  port: 3000,
-  protocol: "http"
+  host: string,
+  port: number,
+  protocol: "http" | "https"
 }
 
 export interface Facility {
@@ -43,6 +43,10 @@ export interface ReportData {
 
 const config = ref<HostConfig>();
 
+function expandUrl(uri: string) {
+  return `${config.value?.protocol}://${config.value?.host}:${config.value?.port}/${uri}`
+}
+
 export default function useVBoxValidator () {
   const errors = ref<Array<string>>([]);
   const isLoading = ref<boolean>(false);
@@ -56,7 +60,7 @@ export default function useVBoxValidator () {
   async function validateReport(data: ReportData) {
     try {
       isLoading.value
-      const res = await fetch('validate_data', {
+      const res = await fetch(expandUrl('validate_data'), {
         method: "POST",
         body: JSON.stringify(data),
         mode: "cors",
@@ -81,7 +85,7 @@ export default function useVBoxValidator () {
       errors.value = ["Unable to load vbox configuration. System now using default config"];
       config.value = {
         host: "localhost",
-        port: 3000,
+        port: 4001,
         protocol: "http"
       } 
     }
