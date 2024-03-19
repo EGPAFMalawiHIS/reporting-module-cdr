@@ -30,7 +30,7 @@
             <ion-button class="ion-float-right" color="primary" @click="toCSV" >CSV</ion-button>
             <ion-button class="ion-float-right" color="primary" @click="printSpec" >PDF</ion-button>
             <ion-button class="ion-float-right" color="primary" @click="goDisagreggatedReport" :disabled="hasInvalidFilters || isEmpty(indicators)">Disaggregated</ion-button>
-            <ion-button class="ion-float-right" color="primary" @click="validateReport(getCSVColumns(), getCSVRows())" :disabled="hasInvalidFilters || isEmpty(indicators)">Validate Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="validate" :disabled="hasInvalidFilters || isEmpty(indicators)">Validate Report</ion-button>
             <ion-button class="ion-float-right" color="primary" @click="fetchData(true)">Fresh Report</ion-button>
             <ion-button class="ion-float-right" color="primary" @click="fetchData()">Archived Report</ion-button>
           </ion-col>
@@ -62,7 +62,7 @@ import { toastWarning } from "@/utils/toasts";
 import { toDisplayRangeFmt, getReportQuarters } from "@/utils/his_date";
 import { CohortReportService } from "@/services/cohort_report_service";
 import { parameterizeUrl } from "@/utils/url";
-import { exportToCSV } from "@/utils/exports";
+import { exportToCSV, toCsvString } from "@/utils/exports";
 import useFacility from "@/composables/useFacility";
 import VSelect from "vue-select";
 import useVBoxValidator from "@/composables/useVBoxValidator";
@@ -198,6 +198,15 @@ function toCSV () {
     rows: getCSVRows(), 
     filename: `MOH ${useFacility().facility.value?.name } cohort report ${period.value}`
   })
+}
+
+function validate() {
+  return validateReport(toCsvString({
+    columns: getCSVColumns(), 
+    rows: getCSVRows(),
+    filename: "",
+    appendFooter: false
+  }));
 }
 </script>
 

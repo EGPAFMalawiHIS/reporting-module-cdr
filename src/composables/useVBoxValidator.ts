@@ -1,9 +1,4 @@
-import { toCsvString } from "@/utils/exports";
-import { TableColumnInterface } from "@uniquedj95/vtable";
-import ApiClient from "@/api";
 import { ref } from "vue";
-import { toastWarning } from "@/utils/toasts";
-import { loader } from "@/utils/loader";
 
 export interface VBoxResult {
   table: VBoxResultTable;
@@ -27,31 +22,61 @@ export interface VBoxResultRule {
   comparator_id: number;
 }
 
-const VBOX_BASE_URL = "http://localhost:4001"
+export interface HostConfig {
+  host: "localhost",
+  port: 3000,
+  protocol: "http"
+}
+
+const config = ref<HostConfig>();
 
 export default function useVBoxValidator () {
-  const errors = ref<Array<string>>([])
+  const errors = ref<Array<string>>([]);
+  const isLoading = ref<boolean>(false);
+
+  if(!config.value) loadConfig();
   
-  function toErrorStrings (result: VBoxResult){
-    return result.table.message.replace("cum_", "Cumulative").replace("_", " ");
+  function toErrorStrings (results: Array<VBoxResult>){
+    return results.map(result => result.table.message.replace("cum_", "Cumulative").replace("_", " "))
   }
   
-  async function validateReport(columns: Array<TableColumnInterface>, rows: Array<any>) {
-    const data = toCsvString({ columns, rows, filename: "", appendFooter: false });
+  async function validateReport(rawdata: string) {
     try {
-      await loader.show();
-      const results = await ApiClient.postJson<Array<VBoxResult>>('validate_data', { data }, {}, VBOX_BASE_URL);
-      errors.value = results.map(toErrorStrings);
+      isLoading.value
+      const res = await fetch('validate_data', {
+        method: "POST",
+        body: JSON.stringify({data: rawdata}),
+        mode: "cors",
+        headers: { "Content-Type": "application/json" }
+      });
+      if(res.ok) errors.value = toErrorStrings(await res.json());
     } catch (error) {
       console.error(error);
-      toastWarning("Unable to validate report");
+      errors.value.push("Unable to validate report");
     } finally {
-      loader.hide();
+      isLoading.value = false;
+    }
+  }
+
+  async function loadConfig () {
+    try {
+      const res = await fetch('/vbox.config.json');
+      if(!res.ok) throw new Error("Unable to load config");
+      config.value = await res.json();
+    } catch (error) {
+      console.error(error);
+      errors.value = ["Unable to load vbox configuration. System now using default config"];
+      config.value = {
+        host: "localhost",
+        port: 3000,
+        protocol: "http"
+      } 
     }
   }
 
   return {
     errors,
-    validateReport
+    validateReport,
+    isLoading
   }
 }

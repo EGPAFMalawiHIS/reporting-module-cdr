@@ -20,6 +20,7 @@ import useVBoxValidator from "@/composables/useVBoxValidator";
 import { TableColumnInterface } from "@uniquedj95/vtable"
 import { PropType, onMounted } from "vue";
 import { modal } from "@/utils/modal";
+import { toCsvString } from "@/utils/exports";
 
 const props = defineProps({
   reportName: {
@@ -38,5 +39,10 @@ const props = defineProps({
 
 const { errors, validateReport } = useVBoxValidator();
 
-onMounted(() => validateReport(props.columns, props.rows));
+onMounted(() => validateReport(toCsvString({
+  columns: props.columns, 
+  rows: props.rows,
+  filename: "",
+  appendFooter: false
+})));
 </script>
