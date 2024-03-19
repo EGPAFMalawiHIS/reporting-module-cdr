@@ -17,32 +17,32 @@
 <script setup lang="ts">
 import { IonCard, IonCardHeader, IonCardTitle, IonButton, IonCardContent, IonList, IonItem, IonLabel } from "@ionic/vue";
 import useVBoxValidator from "@/composables/useVBoxValidator";
-import { TableColumnInterface } from "@uniquedj95/vtable"
 import { PropType, onMounted } from "vue";
 import { modal } from "@/utils/modal";
-import { toCsvString } from "@/utils/exports";
+import useFacility, { Facility } from "@/composables/useFacility";
 
 const props = defineProps({
   reportName: {
     type: String,
     required: true
   },
-  rows: {
-    type: Array as PropType<Array<any>>,
-    default: () => [],
+  reportType: {
+    type: String as PropType<"PEPFAR" | "MoH" | "Clinic">,
+    default: "PEPFAR"
   },
-  columns: {
-    type: Array as PropType<Array<TableColumnInterface>>,
-    default: () => []
+  rawData: {
+    type: String,
+    required: true
   }
 });
 
 const { errors, validateReport } = useVBoxValidator();
+const { facility } = useFacility();
 
-onMounted(() => validateReport(toCsvString({
-  columns: props.columns, 
-  rows: props.rows,
-  filename: "",
-  appendFooter: false
-})));
+onMounted(() => validateReport({
+  rawData: props.rawData,
+  reportName: props.reportName,
+  reportType: props.reportType,
+  facility: facility.value as Facility,
+}));
 </script>

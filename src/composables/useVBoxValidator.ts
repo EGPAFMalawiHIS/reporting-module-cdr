@@ -28,6 +28,19 @@ export interface HostConfig {
   protocol: "http"
 }
 
+export interface Facility {
+  name: string;
+  uuid: string;
+  id: number;
+};
+
+export interface ReportData {
+  facility: Facility;
+  reportName: string;
+  reportType: "MoH" | "PEPFAR" | "Clinic"
+  rawData: string;
+}
+
 const config = ref<HostConfig>();
 
 export default function useVBoxValidator () {
@@ -40,12 +53,12 @@ export default function useVBoxValidator () {
     return results.map(result => result.table.message.replace("cum_", "Cumulative").replace("_", " "))
   }
   
-  async function validateReport(rawdata: string) {
+  async function validateReport(data: ReportData) {
     try {
       isLoading.value
       const res = await fetch('validate_data', {
         method: "POST",
-        body: JSON.stringify({data: rawdata}),
+        body: JSON.stringify(data),
         mode: "cors",
         headers: { "Content-Type": "application/json" }
       });

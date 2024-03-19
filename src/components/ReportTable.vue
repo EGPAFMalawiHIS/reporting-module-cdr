@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
 import { Option } from '@/interfaces';
-import { getCsvExportBtn, getPdfExportBtn } from '@/utils/exports';
+import { getCsvExportBtn, getPdfExportBtn, toCsvString } from '@/utils/exports';
 import { isEmpty, sanitizeStr } from '@/utils/common';
 import useFacility from '@/composables/useFacility';
 import { getReportQuarters, toDisplayRangeFmt } from "@/utils/his_date";
@@ -251,10 +251,12 @@ function getValidationBtn (): ActionButtonInterface {
     color: 'primary', 
     action: () => {
       if(isEmpty(filterValues.value)) return toastWarning("Generate report first");
+      const reportName = props.title.replace(new RegExp(`${props.reportType}|report`, 'gi'), '')
+      const rawData = toCsvString({ columns: props.columns, rows: props.rows, filename: "" })
       return modal.show(ValidationModal, {
-        columns: props.columns,
-        rows: props.rows,
-        reportName: props.title
+        reportName,
+        rawData,
+        reportType: props.reportType,
       })
     } 
   }

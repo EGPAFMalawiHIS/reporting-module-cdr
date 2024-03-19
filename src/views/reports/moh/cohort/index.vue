@@ -63,7 +63,7 @@ import { toDisplayRangeFmt, getReportQuarters } from "@/utils/his_date";
 import { CohortReportService } from "@/services/cohort_report_service";
 import { parameterizeUrl } from "@/utils/url";
 import { exportToCSV, toCsvString } from "@/utils/exports";
-import useFacility from "@/composables/useFacility";
+import useFacility, { Facility } from "@/composables/useFacility";
 import VSelect from "vue-select";
 import useVBoxValidator from "@/composables/useVBoxValidator";
 
@@ -76,6 +76,7 @@ const indicators = ref({} as Record<string, any>);
 const cohort = ref({} as Record<string, any>);
 const report = new CohortReportService();
 const { errors, validateReport } = useVBoxValidator();
+const { facility } = useFacility();
 const useCustomQuarter = computed(() => /custom/i.test(quarter.value?.label));
 const hasInvalidFilters = computed(() => {
   if(isEmpty(quarter.value)) return true;
@@ -196,17 +197,24 @@ function toCSV () {
   return exportToCSV({ 
     columns: getCSVColumns(), 
     rows: getCSVRows(), 
-    filename: `MOH ${useFacility().facility.value?.name } cohort report ${period.value}`
+    filename: `MOH ${facility.value } cohort report ${period.value}`
   })
 }
 
 function validate() {
-  return validateReport(toCsvString({
+  const rawData = toCsvString({
     columns: getCSVColumns(), 
     rows: getCSVRows(),
     filename: "",
     appendFooter: false
-  }));
+  });
+
+  return validateReport({
+    rawData,
+    reportName: "Cohort",
+    reportType: "MoH",
+    facility: facility.value as Facility,
+  });
 }
 </script>
 
