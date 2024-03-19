@@ -21,13 +21,20 @@ export interface ApiConfig {
   version?: string;
 }
 
+const defaultConfig: ApiConfig = {
+  host: "localhost",
+  port: 3000,
+  protocol: "http"
+}
+
 export default new class ApiClient {
   private config: ApiConfig;
   private listeners: Record<ApiEvent, Array<ApiEventListener>>;
   private readonly STORAGE_KEY = '__api_config_storage_key__';
 
   constructor(){
-    this.config = this.loadConfig();
+    this.config = defaultConfig;
+    this.loadConfig();
     this.listeners = {
       beforeRequest: [],
       afterRequest: [],
@@ -74,14 +81,9 @@ export default new class ApiClient {
    * @returns A Promise that resolves to the api configuration object.
    * @throws Error if unable to retrieve the configuration.
    */
-  private loadConfig(): ApiConfig {
-    const config = localStorage.getItem(this.STORAGE_KEY);
-    if (config) return JSON.parse(config);
-    return {
-      host: "localhost",
-      port: 3000,
-      protocol: "http"
-    }
+  private async loadConfig() {
+    const res = await fetch("/api.config.json");
+    if (res.ok) this.config = await res.json();
   }
 
   /**
