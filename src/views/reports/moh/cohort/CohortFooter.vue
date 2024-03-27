@@ -11,11 +11,11 @@
     <tr class="section-description">
       <td class="numbers">&nbsp;</td>
       <td style="font-weight: bold;" colspan="2">Patients registration details</td>
-      <td style="font-weight: normal; text-align:center;">E-Mastercard</td>
+      <td style="font-weight: normal; text-align:center;">CDR</td>
       <td style="font-weight: normal; text-align:center;">Clinic own*</td>
       <td style="font-weight: normal; text-align:center;">Checked data</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal; text-align:center;">E-Mastercard</td>
+      <td style="font-weight: normal; text-align:center;">CDR</td>
       <td style="font-weight: normal; text-align:center;">Clinic own*</td>
       <td style="font-weight: normal; text-align:center;">Checked data</td>
     </tr>
@@ -495,7 +495,7 @@
     <tr class="horisonatl-separator">
       <td class="numbers">&nbsp;</td>
       <td colspan="6" style="text-align: left;">&nbsp;</td>
-      <td style="text-align: center;">E-Mastercard</td>
+      <td style="text-align: center;">CDR</td>
       <td style="text-align: center;">Clinic own**</td>
       <td style="text-align: center;">Checked data</td>
     </tr>

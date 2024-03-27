@@ -87,7 +87,12 @@ export function toCsvString(opts: ExportOptions): string {
   const exportableRows = getExportableRows(columns, sortRows(rows, filters?.sort || []));
   let str = exportableColumns.join(",") + "\n"
   str += exportableRows.map(row => row.join(",")).join("\n");
-  if(appendFooter !== false) str += "\n" + getCsvFooter(quarter, period);
+  str += "\n" + `Date Created:  ${dayjs().format('DD/MMM/YYYY HH:MM:ss')}`;
+  if (quarter) str += "\n" + `Quarter: ${quarter}`;
+  if (period) str += "\n" + `Quarter: ${period}`;
+  str += "\n" + `CDR Version : ${appVersion.value}`;
+  str += "\n" + `API Version ${apiVersion.value}`;
+  str += "\n" + `Site UUID: ${facility.value.uuid}`;
   return str;
 }
 
