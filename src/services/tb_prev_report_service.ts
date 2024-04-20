@@ -16,7 +16,7 @@ export class TbPrevReportService extends ReportService {
     }
 
     getTBPrevReport() {
-        return this.getReport(`/programs/${this.programId}/reports/tb_prev2`)
+        return this.getReport(`tb_prev2`)
     }
 
     buildReportData (cohort: Record<string, any>) {

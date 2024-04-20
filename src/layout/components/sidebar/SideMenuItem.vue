@@ -29,7 +29,7 @@ import { chevronDown } from "ionicons/icons";
 import { RouteRecordRaw } from "vue-router";
 import { IonMenuToggle, IonItem, IonAccordionGroup, IonAccordion } from "@ionic/vue";
 import { resolvePath } from "@/utils/url";
-import { ApiCore } from "emr-api-client";
+import apiClient from "@/api";;
 
 const props = defineProps({ 
   item: {
@@ -44,7 +44,7 @@ const props = defineProps({
 
 const isVisible = computed(() => {
   if (props.item.meta && "hidden" in props.item.meta) return !props.item.meta?.hidden
-  if (props.item.meta && "roles" in props.item.meta) return ApiCore.userHasRoles(props.item.meta.roles as any)
+  if (props.item.meta && "roles" in props.item.meta) return apiClient.userHasRoles(props.item.meta.roles as any)
   return true
 });
 

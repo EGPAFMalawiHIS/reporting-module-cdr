@@ -1,26 +1,19 @@
 <template>
   <div id="consistency_check">
-    <div v-for="(text, index) in reportConsistency" :key="index">
-      {{text}}
+    <div v-for="(text, index) in reportConsistencies" :key="index">
+      {{ text }}
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import useCohortValidator from '@/composables/useCohortValidator';
-import { isEmpty } from '@/utils/common';
-import { PropType, computed } from 'vue';
+import { PropType } from 'vue';
 
-const props = defineProps({
-  indicators: {
-    type: Object as PropType<Record<string, number>>,
-    default: () => ({})
+defineProps({
+  reportConsistencies: {
+    type: Array as PropType<Array<string>>,
+    default: () => []
   }
-})
-
-const reportConsistency = computed(() => {
-  if(isEmpty(props.indicators)) return [];
-  return useCohortValidator(props.indicators)
 });
 </script>
 

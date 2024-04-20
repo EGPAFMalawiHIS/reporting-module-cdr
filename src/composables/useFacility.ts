@@ -1,27 +1,31 @@
-import { ApiCore } from "emr-api-client";
-import { computed, ref } from "vue";
+import ApiClient from "@/api";
+import { ref } from "vue";
 
-const facilityName = ref("");
-const facilityUUID = ref("");
-const district = ref("");
+export interface Facility {
+  name: string;
+  uuid: string;
+  id: number;
+};
 
-async function setLocation(){
-  const res = await ApiCore.getJson<any>('/locations/current_facility');
-  if(res.ok) {
-    facilityName.value = res.data.name;
-    facilityUUID.value = res.data.uuid;
-    district.value = res.data.district;
-  }
+const facility = ref<Facility>();
+
+async function loadFacilities(filter = "", page = 1, limit = 800): Promise<Facility[]> {
+  const facilities = await ApiClient.getJson<Array<any>>('locations', {
+    page,
+    name: filter,
+    page_size: limit
+  })
+
+  return facilities.map(facility => ({
+    name: facility.name,
+    uuid: facility.uuid,
+    id: facility.location_id
+  }))
 }
-
-const isInvalidFacility = computed(() => !facilityName.value || !facilityUUID.value || !district.value);
 
 export default function useFacility() {
   return {
-    facilityName,
-    facilityUUID,
-    district,
-    isInvalidFacility,
-    setLocation,
+    facility,
+    loadFacilities,
   }
 }

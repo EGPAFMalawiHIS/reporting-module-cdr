@@ -17,14 +17,6 @@ export const pepfarReports: RouteRecordRaw = {
       }      
     },
     {
-      path: "defaulters",
-      component: () => import("@/views/reports/pepfar/DefaultersReport.vue"),
-      meta: {
-        title: 'Defaulters',
-        img: 'reports/defaulter-list.png',
-      }      
-    },
-    {
       path: "tx_curr_mmd",
       component: () => import("@/views/reports/pepfar/TxCurrMMD.vue"),
       meta: {
@@ -57,10 +49,10 @@ export const pepfarReports: RouteRecordRaw = {
       }      
     },
     {
-      path: "vl_coverage",
-      component: () => import("@/views/reports/pepfar/VlCoverage.vue"),
+      path: "tx_pvls",
+      component: () => import("@/views/reports/pepfar/TxPVLS.vue"),
       meta: {
-        title: 'VL Coverage',
+        title: 'Tx PVLS',
         img: 'reports/viral_load.png',
       }      
     },

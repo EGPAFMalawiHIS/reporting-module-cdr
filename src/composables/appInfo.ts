@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import conf from "../../package.json";
-import { ApiCore } from "emr-api-client";
+import apiClient from "@/api";
 
 const appVersion = ref("");
 const apiVersion = ref("");
@@ -13,8 +13,8 @@ function loadAppVersions () {
 }
 
 async function loadApiVersion () {
-  const res = await ApiCore.getJson<any>('version');
-  apiVersion.value = res.data['System version'] || '-';
+  const data = await apiClient.getJson<any>('version');
+  apiVersion.value = data['System version'] || '-';
 }
 
 function isValidApiVersion() {

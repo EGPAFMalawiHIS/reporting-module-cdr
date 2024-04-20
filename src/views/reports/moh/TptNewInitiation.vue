@@ -1,7 +1,7 @@
 <template>
   <report-table
-    title="PEPFAR TX New Report"
-    report-type="PEPFAR"
+    title="TPT New Initiation Report"
+    report-type="MoH"
     :columns="columns"
     :rows="rows"
     :period="period"
@@ -18,32 +18,35 @@ import ReportTable from "@/components/ReportTable.vue";
 import { TableColumnInterface } from "@uniquedj95/vtable";
 import { toDisplayGenderFmt } from "@/utils/common";
 import { toastWarning } from "@/utils/toasts";
-import { TxReportService } from "@/services/tx_report_service";
+import { TPT_INITIATION_INDICATORS, TptReportService } from "@/services/tpt_report_service";
 
 const period = ref("-");
 const rows = ref<any[]>([]);
-const report = new TxReportService();
+const report = new TptReportService();
 const columns: TableColumnInterface[] = [
-  { path: "age_group", label: "Age group" },
+  { path: "location", label: "District" },
+  { path: "ageGroup", label: "Age group" },
   { path: "gender", label: "Gender", formatter: toDisplayGenderFmt },
-  { path: "cd4_less_than_200", label: "Tx new CD4 < 200", drillable: true },
-  { path: "cd4_greater_than_equal_to_200", label: "Tx new CD4 >= 200", drillable: true },
-  { path: "cd4_unknown_or_not_done", label: "Tx new CD4 Unknown", drillable: true },
-  { path: "transfer_in", label: "Transfer-ins", drillable: true },
+  ...Object.entries(TPT_INITIATION_INDICATORS).map(([path, label]) => ({ path, label })),
 ]
 
-async function fetchData({dateRange}: Record<string, any>, rebuildOutcome: boolean) {
+async function fetchData({dateRange}: Record<string, any>) {
   try {
     await loader.show();
     report.setStartDate(dateRange.startDate)
     report.setEndDate(dateRange.endDate);
     period.value = report.getDateIntervalPeriod();
-    rows.value = await report.getTxNewReport(rebuildOutcome);
+    const data = await report.getTptNewInitiations();
+    rows.value = [
+      ...data.F.rows,
+      ...data.M.rows,
+      { ageGroup: 'All', gender: 'Male', ...data.M.aggregate },
+      ...await report.getMaternityRows(data.F.aggregate, Object.keys(TPT_INITIATION_INDICATORS))
+    ];
   } catch (error) {
     toastWarning("ERROR! Unable to load report data");
     console.error(error);
   }
   await loader.hide();
 }
-
 </script>

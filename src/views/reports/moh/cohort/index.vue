@@ -29,17 +29,18 @@
           <ion-col :size="useCustomQuarter ? '7' : '10'">
             <ion-button class="ion-float-right" color="primary" @click="toCSV" >CSV</ion-button>
             <ion-button class="ion-float-right" color="primary" @click="printSpec" >PDF</ion-button>
-            <ion-button class="ion-float-right" color="secondary" @click="goDisagreggatedReport" :disabled="hasInvalidFilters || isEmpty(indicators)">Disaggregated</ion-button>
-            <ion-button class="ion-float-right" color="warning" @click="fetchData(true)">Fresh Report</ion-button>
-            <ion-button class="ion-float-right" color="success" @click="fetchData()">Archived Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="goDisagreggatedReport" :disabled="hasInvalidFilters || isEmpty(indicators)">Disaggregated</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="validate" :disabled="hasInvalidFilters || isEmpty(indicators)">Validate Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="fetchData(true)">Fresh Report</ion-button>
+            <ion-button class="ion-float-right" color="primary" @click="fetchData()">Archived Report</ion-button>
           </ion-col>
 
         </ion-row>
         <ion-row class="his-card">
           <ion-col size="12" :key="componentKey" id="report-content">
-            <cohort-v :indicators="indicators" style="font-weight: 600" />
+            <cohort-v :reportConsistencies="errors" style="font-weight: 600" />
             <cohort-h :reportparams="period" />
-            <cohort-ft @onClickIndicator="onDrilldown" :indicators="indicators" />
+            <cohort-ft :indicators="indicators" />
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -50,23 +51,21 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { loader } from "@/utils/loader";
-import { modal } from "@/utils/modal";
 import CohortH from "./CohortHeader.vue";
 import CohortV from "./CohortValidator.vue"
 import CohortFt from "./CohortFooter.vue"
 import { IonCol, IonRow, IonGrid, IonButton, IonCard, IonCardHeader, IonCardContent, IonCardTitle } from "@ionic/vue";
-import { TableColumnInterface } from "@uniquedj95/vtable";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useRouter } from "vue-router";
-import { isEmpty, parseARVNumber, toDisplayGenderFmt } from "@/utils/common";
+import { isEmpty } from "@/utils/common";
 import { toastWarning } from "@/utils/toasts";
-import { toDisplayRangeFmt, getReportQuarters, toDisplayFmt } from "@/utils/his_date";
+import { toDisplayRangeFmt, getReportQuarters } from "@/utils/his_date";
 import { CohortReportService } from "@/services/cohort_report_service";
-import PatientDrillTable from '@/components/PatientDrillTable.vue';
 import { parameterizeUrl } from "@/utils/url";
-import { exportToCSV } from "@/utils/exports";
-import useFacility from "@/composables/useFacility";
+import { exportToCSV, toCsvString } from "@/utils/exports";
+import useFacility, { Facility } from "@/composables/useFacility";
 import VSelect from "vue-select";
+import useVBoxValidator from "@/composables/useVBoxValidator";
 
 const router = useRouter();
 const componentKey = ref(0);
@@ -76,6 +75,8 @@ const dateRange = ref<string[]>([]);
 const indicators = ref({} as Record<string, any>);
 const cohort = ref({} as Record<string, any>);
 const report = new CohortReportService();
+const { errors, validateReport } = useVBoxValidator();
+const { facility } = useFacility();
 const useCustomQuarter = computed(() => /custom/i.test(quarter.value?.label));
 const hasInvalidFilters = computed(() => {
   if(isEmpty(quarter.value)) return true;
@@ -106,27 +107,6 @@ function goDisagreggatedReport() {
   } else {
     toastWarning('Please select a period');
   }
-}
-    
-function onDrilldown(indicator: string) {
-  const customColumns: TableColumnInterface[] = [
-    { path: "arv_number", label: "ARV Number", preSort: parseARVNumber, initialSort: true },
-    { path: "given_name", label: "First Name", exportable: false },
-    { path: "family_name", label: "Last Name", exportable: false },
-    { path: "birthdate", label: "Date of Birth", formatter: toDisplayFmt },
-    { path: "gender", label: "Gender", formatter: toDisplayGenderFmt },
-    { path: "outcome", label: "Outcome" }
-  ];
-  const indicatorData = cohort.value.find((i: any) => i.name === indicator)
-  return modal.show(PatientDrillTable, {
-    data: {},
-    title: indicatorData['indicator_name'] || "Drill down",
-    customColumns,
-    rowParser: () => report.getCohortDrillDown(indicatorData.id),
-    reportType: "MoH",
-    period: period.value,
-    quarter: quarter.value 
-  });
 }
 
 const setReportPeriod = (quarter: string, startDate: string, endDate: string) => {
@@ -161,20 +141,20 @@ async function fetchData (regenerate = false) {
     period.value = `Custom ${report.getDateIntervalPeriod()}`;
     data = report.datePeriodRequestParams();
   } else {
-    setReportPeriod(quarter.value?.label, quarter.value?.other.start, quarter.value?.other.start);
+    setReportPeriod(quarter.value?.label, quarter.value?.other.start, quarter.value?.other.end);
     period.value = quarter.value?.label;
     data = report.qaurterRequestParams();
   }
 
   const response = await report.requestCohort(data);
-  if (response?.ok || response.httpStatusResponse === 204) {
+  if (response && [204, 200].includes(response.status)) {
     const interval = setInterval(async () => {
       data.regenerate = false
       const res = await report.requestCohort(data);
-      if (res?.httpStatusResponse === 200) {
-        const cohortData = res.data;
+      if (res?.status === 200) {
+        const cohortData = await res.json();
         cohort.value = cohortData.values
-        indicators.value = toIndicators(cohortData.values)
+        indicators.value = toIndicators(cohortData.values);
         loader.hide();
         clearInterval(interval)
         componentKey.value++;
@@ -202,17 +182,39 @@ function printSpec() {
   }
 }
 
-function toCSV () {
-  const columns = [
+function getCSVRows() {
+  return Object.entries(indicators.value).map(([indicator, value]) => ({ indicator, value }))
+}
+
+function getCSVColumns () {
+  return [
     { label: "Indicator", path: "indicator" },
     { label: "Value", path: "value" },
-  ];
-  const rows = Object.entries(indicators.value).map(([indicator, value]) => ({
-    indicator,
-    value
-  }))
-  const filename = `MOH ${useFacility().facilityName.value } cohort report ${period.value}`
-  exportToCSV({ columns, rows, filename })
+  ]
+}
+
+function toCSV () {
+  return exportToCSV({ 
+    columns: getCSVColumns(), 
+    rows: getCSVRows(), 
+    filename: `MOH ${facility.value } cohort report ${period.value}`
+  })
+}
+
+function validate() {
+  const rawData = toCsvString({
+    columns: getCSVColumns(), 
+    rows: getCSVRows(),
+    filename: "",
+    appendFooter: false
+  });
+
+  return validateReport({
+    rawData,
+    reportName: "Cohort",
+    reportType: "MoH",
+    facility: facility.value as Facility,
+  });
 }
 </script>
 

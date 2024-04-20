@@ -3,7 +3,8 @@ import { ApiRequestParam } from "@/interfaces";
 import { uniq } from "@/utils/arrays";
 import HisDate from '@/utils/his_date';
 import { parameterizeUrl } from "@/utils/url";
-import { ApiCore } from "emr-api-client";
+import apiClient from "@/api";import useFacility from "@/composables/useFacility";
+;
 
 export type AgeGroup = string;
 export type IndicatorData = Record<string, Array<number>>;
@@ -13,7 +14,7 @@ export interface MaternityData {
   FP: Array<number>;
 }
 
-export type AggregatedReportData<T = any, K = IndicatorData> = Record<Gender, {
+export type AggregatedReportData<T = any, K = any> = Record<Gender, {
   rows: Array<T>;
   aggregate: K;
 }>;
@@ -53,10 +54,10 @@ export class ReportService {
   }
 
   protected buildParams(params?: ApiRequestParam) {
-    let p: ApiRequestParam = {};
+    let p: ApiRequestParam = { location: useFacility().facility.value?.id ?? -1 };
     if(this.useDefaultParams) {
       p['date'] = this.date;
-      p['program_id'] = this.programId;
+      // p['program_id'] = this.programId;
     }
     if(this.startDate) p['start_date'] = this.startDate;
     if(this.endDate) p['end_date'] = this.endDate;
@@ -65,19 +66,17 @@ export class ReportService {
   }
 
   async getReport<T = any>(name: string, params?: ApiRequestParam) {
-    const res = await ApiCore.getJson<T>(parameterizeUrl(name, this.buildParams(params)));
-    if(res.ok) return res.data; 
+    return apiClient.getJson<T>(parameterizeUrl(`reports/${name}`, this.buildParams(params)));
   }
 
   /**
    * @deprecated this will be set to private in the next tag. Use {@link getMaternityData} instead.
    */
   async getMaternalStatus(patientIds: number[], reportDefinition = 'pepfar') {
-    const url = parameterizeUrl("vl_maternal_status", this.buildParams({ 'report_definition': reportDefinition }));
-    const res = await ApiCore.postJson<MaternityData>(url, {
-      'patient_ids': patientIds
+    return this.getReport<MaternityData>("vl_maternal_status", {
+      'patient_ids': patientIds.join(","),
+      'report_definition': reportDefinition
     })
-    return res.data ??{ FP: [], FBf: []}
   }
 
   async getMaternityData(femaleData: Record<string, Array<number>>, indicators: Array<string>, reportDefinition = 'pepfar') {

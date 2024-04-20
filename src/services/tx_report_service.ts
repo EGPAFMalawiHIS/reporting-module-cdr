@@ -72,13 +72,13 @@ export class TxReportService extends ReportService {
   }
 
   async getTxTbReport(rebuild_outcome: boolean) {
-    return this.getReport(`programs/${this.programId}/reports/tx_tb`, { 
+    return this.getReport(`tx_tb`, { 
       rebuild_outcome 
     });
   }
 
   getTxNewReport(rebuild: boolean) {
-    return this.getReport(`programs/${this.programId}/reports/tx_new`, {
+    return this.getReport(`tx_new`, {
       rebuild
     });
   }

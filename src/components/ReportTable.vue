@@ -15,7 +15,6 @@
         :custom-filters="filters" 
         :config="{ showIndices }"
         @custom-filter="onCustomFilter"
-        @drilldown="onDrilldown"
         color="light"
       >
         <template v-for="(_, name) in $slots" #[name]="{ filter }">
@@ -52,7 +51,7 @@
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
 import { Option } from '@/interfaces';
-import { getCsvExportBtn, getPdfExportBtn } from '@/utils/exports';
+import { getCsvExportBtn, getPdfExportBtn, toCsvString } from '@/utils/exports';
 import { isEmpty, sanitizeStr } from '@/utils/common';
 import useFacility from '@/composables/useFacility';
 import { getReportQuarters, toDisplayRangeFmt } from "@/utils/his_date";
@@ -75,12 +74,7 @@ import {
 import { toastWarning } from '@/utils/toasts';
 import { sync } from 'ionicons/icons';
 import { modal } from '@/utils/modal';
-import PatientDrillTable from './PatientDrillTable.vue';
-
-export interface DrilldownData { 
-  column: TableColumnInterface;
-  row: any;
-}
+import ValidationModal from './ValidationModal.vue';
 
 const emit = defineEmits<{
   (e: "generate", filters: Record<string, any>, rebuildCache: boolean): void,
@@ -174,16 +168,6 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  drillTitle: {
-    type: Function as PropType<(data: DrilldownData) => string>,
-    default: () => "Drill-down table"
-  },
-  drillColumns: {
-    type: Array as PropType<Array<TableColumnInterface>>
-  },
-  drillRowParser: {
-    type: Function as PropType<(data: DrilldownData) => Promise<Array<any>>>
-  }
 });
 
 const dateRange = ref<Array<string>>([]);
@@ -191,7 +175,7 @@ const pickerDate = ref("");
 const filterValues = ref({} as Record<string, any>);
 const filename = computed(() => sanitizeStr(`
   ${props.reportType} 
-  ${useFacility().facilityName.value } 
+  ${useFacility().facility.value?.name ?? '' } 
   ${(props.filename || props.title).replace(props.reportType, "")} 
   ${props.period ? props.period : props.date }
 `));
@@ -242,7 +226,7 @@ const filters = computed<CustomFilterInterface[]>(() => {
 })
 
 const actionBtns = computed<ActionButtonInterface[]>(() => {
-  const btns = [...props.actionButtons];
+  const btns = [...props.actionButtons, getValidationBtn() ];
   if (props.canExportCsv) btns.push(getCsvExportBtn(filename.value, props.quarter?.label, props.period));
   if (props.canExportPDF) btns.push(getPdfExportBtn(filename.value, props.useSecureExport, props.quarter?.label, props.period));
   if(props.showRefreshButton) btns.push(getRefreshBtn());
@@ -257,6 +241,23 @@ function getRefreshBtn (): ActionButtonInterface {
     action: () => {
       if(isEmpty(filterValues.value)) return toastWarning("Invalid filters");
       emit("generate", filterValues.value, true);
+    } 
+  }
+}
+
+function getValidationBtn (): ActionButtonInterface {
+  return { 
+    label: "Validate Report",
+    color: 'primary', 
+    action: () => {
+      if(isEmpty(filterValues.value)) return toastWarning("Generate report first");
+      const reportName = props.title.replace(new RegExp(`${props.reportType}|report`, 'gi'), '')
+      const rawData = toCsvString({ columns: props.columns, rows: props.rows, filename: "" })
+      return modal.show(ValidationModal, {
+        reportName,
+        rawData,
+        reportType: props.reportType,
+      })
     } 
   }
 }
@@ -291,17 +292,5 @@ function onCustomFilter (values: Record<string, any>) {
     return emit("generate", values, false);
   }
   toastWarning("Invalid filters")
-}
-
-function onDrilldown(data: DrilldownData) {
-  return modal.show(PatientDrillTable, {
-    data,
-    title: props.drillTitle(data),
-    customColumns: props.drillColumns,
-    rowParser: props.drillRowParser,
-    reportType: props.reportType,
-    period: props.period,
-    quarter: props.quarter 
-  });
 }
 </script>

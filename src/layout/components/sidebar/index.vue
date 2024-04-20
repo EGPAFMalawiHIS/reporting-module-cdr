@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import SideMenuItem from './SideMenuItem.vue';
-import { resolveImage } from '@/utils/image';
 import { routes } from "@/router";
 import { 
   IonMenu, 
@@ -9,7 +8,6 @@ import {
   IonContent, 
   IonList,
   IonItem,
-  IonThumbnail,
   IonLabel
 } from '@ionic/vue';
 </script>
@@ -19,12 +17,8 @@ import {
     <ion-header>
       <ion-toolbar>
         <ion-item lines="none"> 
-          <ion-thumbnail slot="start"> 
-            <img :src="resolveImage('aids.png')" class="logo" alt="HIV Electronic Mastercard App logo"/>
-          </ion-thumbnail>
-          <ion-label>E-MASTERCARD</ion-label>
+          <ion-label>CDR Reporting App</ion-label>
         </ion-item>
-        <ion-label class="ion-margin-start">HIV Electronic Mastercard App</ion-label>
       </ion-toolbar>
     </ion-header>
     <ion-content>

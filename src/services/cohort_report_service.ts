@@ -1,5 +1,6 @@
 import { ReportService } from "./report_service";
-import { ApiCore } from 'emr-api-client';
+import apiClient from "@/api";import useFacility from "@/composables/useFacility";
+;
 import { ApiRequestParam } from '@/interfaces';
 
 export class CohortReportService extends ReportService {
@@ -20,7 +21,7 @@ export class CohortReportService extends ReportService {
   }
 
   getCohortDrillDown(resourceId: string) {
-    return ApiCore.getJson('cohort_report_drill_down', {
+    return apiClient.getJson('cohort_report_drill_down', {
       id: resourceId,
       date: this.date,
       'program_id': this.programId
@@ -30,6 +31,7 @@ export class CohortReportService extends ReportService {
   qaurterRequestParams() {
     return { 
       name: this.quarter,
+      location: useFacility().facility.value?.id,
       regenerate: this.regenerate 
     }
   }
@@ -39,11 +41,12 @@ export class CohortReportService extends ReportService {
       name: `Cohort-${this.startDate}-${this.endDate}`,
       'start_date': this.startDate,
       'end_date': this.endDate,
-      regenerate: this.regenerate
+      regenerate: this.regenerate,
+      location: useFacility().facility.value?.id,
     };
   }
 
   requestCohort(params: ApiRequestParam) {
-    return ApiCore.getJson<any>(`programs/${this.programId}/reports/cohort`, params);
+    return apiClient.getAjax(`reports/cohort`, params);
   }
 }
