@@ -1,0 +1,56 @@
+name: Build and Attach ZIP to Tag
+
+on:
+  push:
+    tags:
+      - '*'  # Run on every tag creation
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+
+      # Setup Node.js (version 20.x)
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      # Install dependencies using npm
+      - name: Install dependencies
+        run: npm ci
+
+      # Build the project using Vite
+      - name: Build project with Vite
+        run: npx vite build
+
+      # Create a ZIP file from the dist folder
+      - name: Zip dist folder
+        run: |
+          zip -r dist.zip dist
+
+      # Create a release (if it doesn't already exist)
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload the ZIP file to the release
+      - name: Upload ZIP to GitHub Release
+        uses: actions/upload-release-asset@v1.0.2
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist.zip
+          asset_name: dist_${{ github.ref_name }}.zip
+          asset_content_type: application/zip
